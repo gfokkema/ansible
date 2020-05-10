@@ -1,0 +1,12 @@
+---
+- name: Docker | Use systemd cgroups
+  lineinfile:
+    path: /usr/lib/systemd/system/docker.service
+    regex: ^ExecStart=
+    line: ExecStart=/usr/bin/dockerd --exec-opt native.cgroupdriver=systemd -H fd://
+  notify: restart docker
+- name: Docker | Start docker
+  service:
+    name: docker
+    enabled: true
+    state: started

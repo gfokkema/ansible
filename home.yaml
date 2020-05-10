@@ -1,7 +1,12 @@
 ---
 - hosts: all
   become: true
+  gather_facts: false
   roles:
-  - { role: ansible, gather_facts: false }
+  - { role: ansible }
+
+- hosts: all
+  become: true
+  roles:
   - { role: server-basic }
-  - { role: server-kube, when: "'kube' in {{ roles }}" }
+  - { role: server-kube, when: "'kube' in roles", tags: ['kube'] }

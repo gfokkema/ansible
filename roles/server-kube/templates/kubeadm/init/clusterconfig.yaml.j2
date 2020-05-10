@@ -1,0 +1,22 @@
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+certificatesDir: /etc/kubernetes/pki
+clusterName: kubernetes
+controlPlaneEndpoint: {{ kubernetes.address }}:{{ kubernetes.bindPort }}
+imageRepository: k8s.gcr.io
+kubernetesVersion: v1.18.0
+apiServer:
+  timeoutForControlPlane: 4m0s
+controllerManager:
+  extraArgs:
+    allocate-node-cidrs: "true"
+    cluster-cidr: 10.244.0.0/16
+dns:
+  type: CoreDNS
+etcd:
+  local:
+    dataDir: /var/lib/etcd
+networking:
+  dnsDomain: {{ kubernetes.dnsDomain }}
+  serviceSubnet: {{ kubernetes.serviceSubnet }}
+scheduler: {}

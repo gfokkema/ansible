@@ -1,0 +1,8 @@
+bootstrapTokens:
+- token: {{ kubeadm.token }}
+  ttl: 24h0m0s
+  groups:
+  - system:bootstrappers:kubeadm:default-node-token
+  usages:
+  - signing
+  - authentication

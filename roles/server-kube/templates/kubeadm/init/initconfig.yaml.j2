@@ -1,0 +1,7 @@
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+{% include "kubeadm/init/bootstrap.yaml.j2" %}
+
+{% include "kubeadm/snippets/controlplane.yaml.j2" %}
+
+{% include "kubeadm/snippets/nodereg.yaml.j2" %}

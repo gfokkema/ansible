@@ -1,0 +1,33 @@
+---
+- name: Kubelet | Create config dir
+  file:
+    dest: /etc/kubernetes
+    state: directory
+- name: Kubelet | Enable service
+  service:
+    name: kubelet
+    enabled: true
+
+- name: Kubeadm | Stat kubeadm.lock
+  stat: path=/etc/kubernetes/kubeadm.lock
+  register: kubeadm_lock
+- block:
+  - name: Kubeadm | Reset
+    command:
+      cmd: kubeadm reset -f
+  - name: Kubeadm | Init
+    include_tasks: kubeadm-init.yaml
+    when: not kubeadm.join
+  - name: Kubeadm | Join
+    include_tasks: kubeadm-join.yaml
+    when: kubeadm.join
+  - debug: var=result.stdout_lines
+  - debug: var=result.stderr_lines
+  - name: Kubeadm | Evaluate result
+    fail: msg=result.rc
+    when: result.rc 
+  - name: Kubeadm | Place kubeadm.lock
+    file:
+      path: /etc/kubernetes/kubeadm.lock
+      state: touch
+  when: kubeadm.overwrite is defined and kubeadm.overwrite or not kubeadm_lock.stat.exists

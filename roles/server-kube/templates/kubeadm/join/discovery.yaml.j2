@@ -1,0 +1,6 @@
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: {{ kubernetes.address }}:{{ kubernetes.bindPort }}
+    token: {{ kubeadm.token }}
+    unsafeSkipCAVerification: true
+  timeout: 5m0s

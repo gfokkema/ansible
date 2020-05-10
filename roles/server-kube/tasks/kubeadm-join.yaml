@@ -1,0 +1,8 @@
+---
+- template:
+    src: kubeadm/join.yaml.j2
+    dest: /etc/kubernetes/kubeadm.yaml
+- command:
+    cmd: kubeadm join --config=/etc/kubernetes/kubeadm.yaml
+  register: result
+  ignore_errors: true

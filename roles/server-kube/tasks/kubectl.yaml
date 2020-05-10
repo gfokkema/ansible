@@ -1,0 +1,16 @@
+---
+- name: Kubectl | Stat config
+  stat: path=/root/.kube/config
+  register: kube_config
+- name: Kubectl | Create config
+  block:
+  - file:
+      path: /root/.kube
+      state: directory
+  - copy:
+      remote_src: true
+      src: /etc/kubernetes/admin.conf
+      dest: /root/.kube/config
+  - command:
+      cmd: kubectl config set-context --namespace=kube-system --current
+  when: kubeadm.overwrite is defined and kubeadm.overwrite or not kube_config.stat.exists

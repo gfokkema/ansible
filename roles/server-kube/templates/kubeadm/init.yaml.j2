@@ -1,0 +1,7 @@
+{% include "kubeadm/init/initconfig.yaml.j2" %}
+
+---
+{% include "kubeadm/init/clusterconfig.yaml.j2" %}
+
+---
+{% include "kubeadm/snippets/kubelet.yaml.j2" %}

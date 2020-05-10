@@ -1,0 +1,4 @@
+controlPlane:
+  {% filter indent(width=2) -%}
+  {% include "kubeadm/snippets/controlplane.yaml.j2" %}
+  {%- endfilter %}

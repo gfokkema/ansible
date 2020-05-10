@@ -1,0 +1,9 @@
+nodeRegistration:
+  name: {{ inventory_hostname }}
+  criSocket: /var/run/dockershim.sock
+  ignorePreflightErrors:
+  - NumCPU
+  - Swap
+  taints:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master

@@ -14,8 +14,20 @@
       dest: /etc/pacman.d/mirrorlist
     vars:
       data: "{{ mirrorlist }}"
-- name: Install default packages
-  pacman:
-    name: "{{ item.key }}"
-    state: "{{ item.value.state | default('present') }}"
-  loop: "{{ packages | dict2items }}"
+- name: Install packages
+  block:
+  - set_fact: packages="{{ packages | default({}) | combine(lookup('vars', item)) }}"
+    loop: "{{ hostvars[inventory_hostname].keys() | select('match', '^packages_.*$') | list }}"
+  - set_fact: packages_present="{{ packages_present | default([]) + [ item.key ] }}"
+    loop: "{{ packages | dict2items }}"
+    when: not item.value or item.value.state == 'present'
+  - pacman:
+      name: "{{ packages_present }}"
+      state: present
+      update_cache: true
+  - set_fact: packages_absent="{{ packages_absent | default([]) + [ item.key ] }}"
+    loop: "{{ packages | dict2items }}"
+    when: item.value and item.value.state == 'absent'
+  - pacman:
+      name: "{{ packages_absent }}"
+      state: absent

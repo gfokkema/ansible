@@ -1,3 +1,3 @@
 kubeadm:
   token: 7j58ig.ogppcgajsclp1nvy
-  join: false
+  join: true

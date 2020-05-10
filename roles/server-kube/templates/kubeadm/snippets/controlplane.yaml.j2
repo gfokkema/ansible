@@ -1,0 +1,4 @@
+certificateKey: {{ kubernetes.certificateKey }}
+localAPIEndpoint:
+  advertiseAddress: {{ kubeadm.address | default(ansible_default_ipv4.address) }}
+  bindPort: {{ kubernetes.bindPort }}

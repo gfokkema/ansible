@@ -1,0 +1,22 @@
+roles:
+- kube
+
+packages_kube:
+  conntrack-tools: {}
+  docker: {}
+  ebtables: {}
+  ethtool: {}
+  kubeadm-bin: {}
+  kubectl: {}
+  kubelet-bin: {}
+  kubernetes-cni-bin: {}
+  socat: {}
+
+kubernetes:
+  address: 192.168.0.21
+  bindPort: 6443
+  certificateKey: 44b0dc902d665443a79cd6b82bf1218e4c3340b2b2ad8a1324b598a571f5cda2
+  dnsDomain: cluster.local
+  serviceSubnet: 10.96.0.0/12
+  flannel:
+    type: host-gw
