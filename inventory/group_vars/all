@@ -1,0 +1,6 @@
+packages:
+  dummy: { state: absent }
+  git: {}
+  lsof: {}
+  man: {}
+  mlocate: {}

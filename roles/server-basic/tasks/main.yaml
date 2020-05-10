@@ -1,0 +1,21 @@
+---
+- name: Backup original config
+  include_tasks: backup.yaml
+  loop:
+    - /etc/pacman.conf
+    - /etc/pacman.d/mirrorlist
+- name: Create config
+  block:
+  - template:
+      src: pacman.conf.j2
+      dest: /etc/pacman.conf
+  - template:
+      src: section.conf.j2
+      dest: /etc/pacman.d/mirrorlist
+    vars:
+      data: "{{ mirrorlist }}"
+- name: Install default packages
+  pacman:
+    name: "{{ item.key }}"
+    state: "{{ item.value.state | default('present') }}"
+  loop: "{{ packages | dict2items }}"

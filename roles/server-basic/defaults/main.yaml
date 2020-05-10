@@ -1,0 +1,24 @@
+---
+mirrorlist:
+  Server:
+  - http://ftp.nluug.nl/os/Linux/distr/archlinux/$repo/os/$arch
+  - http://ftp.snt.utwente.nl/pub/os/linux/archlinux/$repo/os/$arch
+sections:
+  options:
+    HoldPkg: pacman glib
+    Architecture: auto
+    Color: null
+    CheckSpace: null
+    SigLevel: Required DatabaseOptional
+    LocalFileSigLevel: Optional
+    CleanMethod: KeepCurrent
+  core:
+    Include: /etc/pacman.d/mirrorlist
+  extra:
+    Include: /etc/pacman.d/mirrorlist
+  community:
+    Include: /etc/pacman.d/mirrorlist
+  custom:
+    SigLevel: Optional TrustAll
+    Server:
+    - file:///var/cache/pacman/custom

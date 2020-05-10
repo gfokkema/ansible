@@ -1,0 +1,5 @@
+{% for name, data in sections.items() -%}
+[{{ name }}]
+{% include 'section.conf.j2' %}
+
+{% endfor %}

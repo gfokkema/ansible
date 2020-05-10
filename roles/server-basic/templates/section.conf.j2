@@ -1,0 +1,13 @@
+{% for k, v in data.items() -%}
+{% if v -%}
+{% if v is string -%}
+{{ k }} = {{ v }}
+{% else -%}
+{% for elem in v -%}
+{{ k }} = {{ elem }}
+{% endfor -%}
+{% endif -%}
+{% else -%}
+{{ k }}
+{% endif -%}
+{% endfor %}
