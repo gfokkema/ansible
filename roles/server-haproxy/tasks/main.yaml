@@ -4,14 +4,11 @@
     name: haproxy
     state: present
 - name: HAProxy | Backup config
-  block:
-  - stat: path=/etc/haproxy/haproxy.cfg.orig
-    register: haproxy_orig
-  - copy:
-      src: /etc/haproxy/haproxy.cfg
-      dest: /etc/haproxy/haproxy.cfg.orig
-      remote_src: true
-    when: "not haproxy_orig.stat.exists"
+  import_role:
+    name: backup
+  vars:
+    files:
+    - /etc/haproxy/haproxy.cfg
 - name: HAProxy | Configure
   template:
     src: haproxy.cfg.j2

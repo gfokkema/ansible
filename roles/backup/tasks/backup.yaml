@@ -1,7 +1,8 @@
 ---
 - stat: path={{ item }}.orig
-  register: "pacman_orig"
+  register: "orig_file"
 - copy:
     src: "{{ item }}"
     dest: "{{ item }}.orig"
-  when: "not pacman_orig.stat.exists"
+    remote_src: true
+  when: "not orig_file.stat.exists"

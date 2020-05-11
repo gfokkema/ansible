@@ -1,10 +1,12 @@
 ---
-- name: Backup original config
-  include_tasks: backup.yaml
-  loop:
+- name: Basic | Backup original config
+  import_role:
+    name: backup
+  vars:
+    files:
     - /etc/pacman.conf
     - /etc/pacman.d/mirrorlist
-- name: Create config
+- name: Basic | Create config
   block:
   - template:
       src: pacman.conf.j2
@@ -14,7 +16,7 @@
       dest: /etc/pacman.d/mirrorlist
     vars:
       data: "{{ mirrorlist }}"
-- name: Install packages
+- name: Basic | Install packages
   block:
   - set_fact: packages="{{ packages | default({}) | combine(lookup('vars', item)) }}"
     loop: "{{ hostvars[inventory_hostname].keys() | select('match', '^packages_.*$') | list }}"

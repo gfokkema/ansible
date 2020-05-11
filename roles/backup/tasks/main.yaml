@@ -1,0 +1,4 @@
+---
+- name: Backup original config
+  include_tasks: backup.yaml
+  loop: "{{ files }}"
