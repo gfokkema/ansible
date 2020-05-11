@@ -1,0 +1,35 @@
+global
+    maxconn     20000
+    log         127.0.0.1 local0
+    user        haproxy
+    chroot      /usr/share/haproxy
+    pidfile     /run/haproxy.pid
+    daemon
+
+listen stats
+    bind    *:9000
+    mode    http
+    stats   enable
+    stats   uri       /
+    stats   refresh   30s
+
+{% for name, frontend in haproxy.frontends.items() %}
+frontend {{ name }}
+    bind :443
+    mode tcp
+    tcp-request inspect-delay 5s
+    tcp-request content accept if { req.ssl_hello_type 1 }
+    default_backend {{ frontend.default_backend }}
+{% endfor %}
+
+{% for name, backend in haproxy.backends.items() %}
+backend {{ name }}
+    balance roundrobin
+    mode tcp
+    option tcplog
+    option tcp-check
+    default-server inter 10s downinter 5s rise 2 fall 2 slowstart 60s maxconn 250 maxqueue 256 weight 100
+{% for member in backend.members %}
+    server {{ member.name }} {{ member.address }} check
+{% endfor %}
+{% endfor %}

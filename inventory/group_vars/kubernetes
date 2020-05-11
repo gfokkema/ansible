@@ -1,5 +1,18 @@
 roles:
+- haproxy
 - kube
+
+haproxy:
+  backends:
+    k8s-api-https:
+      members:
+      - name: kube-node-01
+        address: 192.168.0.21:6443
+      - name: kube-node-02
+        address: 192.168.0.22:6443
+  frontends:
+    k8s-api-https-proxy:
+      default_backend: k8s-api-https
 
 packages_kube:
   conntrack-tools: {}

@@ -1,0 +1,24 @@
+---
+- name: HAProxy | Install
+  pacman:
+    name: haproxy
+    state: present
+- name: HAProxy | Backup config
+  block:
+  - stat: path=/etc/haproxy/haproxy.cfg.orig
+    register: haproxy_orig
+  - copy:
+      src: /etc/haproxy/haproxy.cfg
+      dest: /etc/haproxy/haproxy.cfg.orig
+      remote_src: true
+    when: "not haproxy_orig.stat.exists"
+- name: HAProxy | Configure
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+  notify: restart haproxy
+- name: HAProxy | Enable service
+  service:
+    name: haproxy
+    enabled: true
+    state: started
