@@ -1,0 +1,15 @@
+---
+- name: BIRD | Create network
+  block:
+  - template:
+      src: systemd.netdev.j2
+      dest: /etc/systemd/network/{{ prefix }}.netdev
+    notify: restart networkd
+  - template:
+      src: systemd.network.j2
+      dest: /etc/systemd/network/{{ prefix }}.network
+    notify: restart networkd
+  vars:
+    name: "{{ item.key }}"
+    interface: "{{ item.value }}"
+    prefix: "{{ item.value.priority }}-{{ item.key }}"

@@ -1,6 +1,14 @@
 roles:
+- bird
 - haproxy
 - kube
+
+bird:
+  networks:
+  - 192.168.0.20/32
+  peers:
+  - src: { asn: 65001, ip: "{{ ansible_default_ipv4.address }}" }
+    dst: { asn: 65000, ip: 192.168.0.1 }
 
 haproxy:
   backends:
@@ -12,7 +20,14 @@ haproxy:
         address: 192.168.0.22:6443
   frontends:
     k8s-api-https-proxy:
+      bind: :443
       default_backend: k8s-api-https
+
+interfaces:
+  kubeapi:
+    ip: 192.168.0.20/32
+    kind: dummy
+    priority: 21
 
 packages_kube:
   conntrack-tools: {}
@@ -26,10 +41,10 @@ packages_kube:
   socat: {}
 
 kubernetes:
-  address: 192.168.0.21
   bindPort: 6443
   certificateKey: 44b0dc902d665443a79cd6b82bf1218e4c3340b2b2ad8a1324b598a571f5cda2
   dnsDomain: cluster.local
+  endpoint: 192.168.0.20:443
   serviceSubnet: 10.96.0.0/12
   flannel:
     type: host-gw

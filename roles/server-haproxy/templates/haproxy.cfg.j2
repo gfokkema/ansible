@@ -15,7 +15,7 @@ listen stats
 
 {% for name, frontend in haproxy.frontends.items() %}
 frontend {{ name }}
-    bind :443
+    bind {{ frontend.bind }}
     mode tcp
     tcp-request inspect-delay 5s
     tcp-request content accept if { req.ssl_hello_type 1 }

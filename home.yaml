@@ -9,5 +9,6 @@
   become: true
   roles:
   - { role: server-basic }
+  - { role: server-bird,    when: "'bird' in roles",    tags: ['bird'] }
   - { role: server-haproxy, when: "'haproxy' in roles", tags: ['haproxy'] }
   - { role: server-kube,    when: "'kube' in roles",    tags: ['kube'] }

@@ -1,0 +1,21 @@
+---
+- name: BIRD | Install
+  pacman:
+    name: bird
+    state: present
+- name: BIRD | Backup config
+  import_role:
+    name: backup
+  vars:
+    files:
+    - /etc/bird.conf
+- name: BIRD | Configure
+  template:
+    src: bird.conf.j2
+    dest: /etc/bird.conf
+  notify: reload bird
+- name: BIRD | Enable service
+  service:
+    name: bird
+    enabled: true
+    state: started

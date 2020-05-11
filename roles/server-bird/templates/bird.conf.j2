@@ -1,0 +1,50 @@
+log "bird.log" all;
+# debug protocols all;
+
+router id {{ bird.id | default(ansible_default_ipv4.address) }};
+
+ipv4 table master4;
+ipv6 table master6;
+
+protocol device {
+}
+
+protocol kernel kernel4 {
+	ipv4 {
+		export all;
+	};
+}
+
+protocol kernel kernel6 {
+	ipv6 {
+		export all;
+	};
+}
+
+protocol static static4 {
+	ipv4;
+}
+
+protocol static static6 {
+	ipv6;
+}
+
+protocol static static4_bgp {
+	ipv4;
+
+{% for network in bird.networks %}
+	route {{ network }} reject;
+{% endfor %}
+}
+
+{% for peering in bird.peers | default([]) %}
+protocol bgp {
+	local {{ peering.src.ip }} as {{ peering.src.asn }};
+	neighbor {{ peering.dst.ip }} as {{ peering.dst.asn }};
+
+	ipv4 {
+		import none;
+		export where proto = "static4_bgp";
+	};
+}
+{% endfor %}

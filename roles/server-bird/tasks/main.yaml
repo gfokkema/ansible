@@ -1,0 +1,4 @@
+---
+- include_tasks: interface.yaml
+  loop: "{{ interfaces | dict2items }}"
+- include_tasks: bird.yaml
