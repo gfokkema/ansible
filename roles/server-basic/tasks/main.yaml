@@ -23,13 +23,18 @@
   - set_fact: packages_present="{{ packages_present | default([]) + [ item.key ] }}"
     loop: "{{ packages | dict2items }}"
     when: not item.value or item.value.state == 'present'
-  - pacman:
-      name: "{{ packages_present }}"
-      state: present
-      update_cache: true
   - set_fact: packages_absent="{{ packages_absent | default([]) + [ item.key ] }}"
     loop: "{{ packages | dict2items }}"
     when: item.value and item.value.state == 'absent'
   - pacman:
+      name: "{{ packages_present }}"
+      state: present
+      update_cache: true
+  - pacman:
       name: "{{ packages_absent }}"
       state: absent
+- name: Basic | Install symlinks
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop: "{{ symlinks_base }}"

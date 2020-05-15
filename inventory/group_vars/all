@@ -1,7 +1,13 @@
 packages_base:
   aurutils: {}
+  bash-completion: {}
   dummy: { state: absent }
   git: {}
   lsof: {}
   man: {}
   mlocate: {}
+symlinks_base:
+- src: /usr/share/git/completion/git-prompt.sh
+  dest: /etc/profile.d/git-prompt.sh
+- src: vim
+  dest: /usr/bin/vi
