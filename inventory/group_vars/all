@@ -3,10 +3,12 @@ packages_base:
   bash-completion: {}
   dummy: { state: absent }
   git: {}
+  iotop: {}
   logrotate: {}
   lsof: {}
   man: {}
   mlocate: {}
+  sysstat: {}
 symlinks_base:
 - src: /usr/share/git/completion/git-prompt.sh
   dest: /etc/profile.d/git-prompt.sh

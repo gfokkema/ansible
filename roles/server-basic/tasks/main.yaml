@@ -33,6 +33,7 @@
   - pacman:
       name: "{{ packages_absent }}"
       state: absent
+  tags: packages
 - name: Basic | Install symlinks
   file:
     src: "{{ item.src }}"
