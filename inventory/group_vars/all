@@ -3,6 +3,7 @@ packages_base:
   bash-completion: {}
   dummy: { state: absent }
   git: {}
+  logrotate: {}
   lsof: {}
   man: {}
   mlocate: {}

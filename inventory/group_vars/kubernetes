@@ -38,6 +38,18 @@ kubernetes:
   flannel:
     type: host-gw
 
+logrotate:
+  docker:
+    path: /var/lib/docker/containers/*/*.log
+    options:
+    - rotate 5
+    - daily
+    - copytruncate
+    - missingok
+    - notifempty
+    - compress
+    - create 0644 root root
+
 packages_kube:
   conntrack-tools: {}
   docker: {}

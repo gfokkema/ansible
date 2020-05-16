@@ -38,3 +38,8 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   loop: "{{ symlinks_base }}"
+- name: Basic | Configure logrotate
+  template:
+    src: logrotate.conf.j2
+    dest: /etc/logrotate.d/{{ item.key }}
+  loop: "{{ logrotate | dict2items }}"
