@@ -36,6 +36,7 @@
   tags: packages
 - name: Basic | Install symlinks
   file:
+    state: link
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   loop: "{{ symlinks_base }}"
@@ -43,4 +44,4 @@
   template:
     src: logrotate.conf.j2
     dest: /etc/logrotate.d/{{ item.key }}
-  loop: "{{ logrotate | dict2items }}"
+  loop: "{{ logrotate | default({}) | dict2items }}"

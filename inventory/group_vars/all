@@ -8,7 +8,11 @@ packages_base:
   lsof: {}
   man: {}
   mlocate: {}
+  ngrep: {}
+  pv: {}
   sysstat: {}
+  tcpdump: {}
+  tree: {}
 symlinks_base:
 - src: /usr/share/git/completion/git-prompt.sh
   dest: /etc/profile.d/git-prompt.sh

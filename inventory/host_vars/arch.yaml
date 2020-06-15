@@ -1,0 +1,11 @@
+roles:
+- apache
+
+packages_specific:
+  dovecot: {}
+  mariadb: {}
+  php-fpm: {}
+  postfix: {}
+  roundcubemail: {}
+  spamassassin: {}
+  squid: {}
