@@ -1,0 +1,10 @@
+---
+- name: Bootstrap
+  delegate_to: "{{ bootstrap_ip }}"
+  block:
+    - import_tasks: partitions.yaml
+    - import_tasks: configure.yaml
+    - shell: sleep 5 && reboot
+      async: 1
+      poll: 0
+- wait_for_connection: delay=30

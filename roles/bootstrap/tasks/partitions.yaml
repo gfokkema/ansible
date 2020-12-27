@@ -1,0 +1,27 @@
+---
+- name: Create partitions
+  community.general.parted:
+    device: /dev/vda
+    number: "{{ ansible_loop.index }}"
+    state: present
+    part_start: "{{ item.part_start }}"
+    part_end: "{{ item.part_end | default(omit) }}"
+    label: gpt
+    flags: "{{ item.flags | default([]) }}"
+    fs_type: "{{ item.fstype | default(omit) }}"
+  loop_control:
+    extended: true
+  loop:
+    - part_start: "{{ esp_start }}MiB"
+      part_end: "{{ esp_end }}MiB"
+      flags: [ esp ]
+    - part_start: "{{ esp_end }}MiB"
+      fs_type: ext4
+- name: Create ESP filesystem
+  community.general.filesystem: fstype=vfat dev=/dev/vda1 opts=-F32
+- name: Create root filesystem
+  community.general.filesystem: fstype=ext4 dev=/dev/vda2
+- name: Mount root volume
+  ansible.posix.mount: path=/mnt src=/dev/vda2 fstype=ext4 state=mounted
+- name: Mount ESP volume
+  ansible.posix.mount: path=/mnt/boot src=/dev/vda1 fstype=vfat state=mounted

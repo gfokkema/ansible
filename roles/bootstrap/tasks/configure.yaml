@@ -1,0 +1,52 @@
+---
+- name: Bootstrap arch packages
+  ansible.builtin.shell:
+    cmd: "pacstrap /mnt {{ packages | join(' ') }}"
+    creates: /mnt/etc/issue
+  register: pacstrap_result
+- name: Generate /etc/fstab
+  ansible.builtin.shell:
+    cmd: genfstab -U /mnt
+  changed_when: false
+  register: genfstab_result
+- name: Create /etc/fstab
+  ansible.builtin.copy:
+    content: "{{ genfstab_result.stdout }}"
+    dest: /mnt/etc/fstab
+
+- name: Create /etc/hostname
+  ansible.builtin.copy:
+    content: |
+      {{ inventory_hostname_short }}
+    dest: /mnt/etc/hostname
+- name: Create /etc/hosts
+  ansible.builtin.copy:
+    content: |
+      127.0.0.1	localhost
+      ::1		localhost
+      {{ network_real.address }}	{{ inventory_hostname_short }}.localdomain	{{ inventory_hostname_short }}
+    dest: /mnt/etc/hosts
+- name: Create systemd-network config
+  ansible.builtin.copy:
+    content: |
+      [Match]
+      Name={{ network_real.interface | default('ens18') }}
+
+      [Network]
+      Address={{ network_real.address }}
+      Gateway={{ network_real.gateway }}
+      DNS={{ network_real.dns }}
+    dest: /mnt/etc/systemd/network/20-wired.network
+
+- ansible.builtin.copy:
+    src: chroot.yaml
+    dest: /mnt/chroot.yaml
+- block:
+    - ansible.builtin.shell:
+        cmd: arch-chroot /mnt ansible-playbook /chroot.yaml
+      register: ansible_result
+  always:
+    - debug: msg="{{ ansible_result.stdout_lines }}"
+    - ansible.builtin.file:
+        path: /mnt/chroot.yaml
+        state: absent

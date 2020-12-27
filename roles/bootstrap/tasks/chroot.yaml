@@ -1,0 +1,45 @@
+---
+- hosts: localhost
+  vars:
+    root_password: $6$6QXDQBxsEYSjyyrF$ekLb5UWKXXjgDRmMBduAKjOagPE0yS2Y/ell1HF3vzS1HcBjV.5XG2zZeSgvaIjxjDwK9y/QhSJs94BiphvC9/
+    ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQl6UazTmihwKdmhSRp12Ej5fvGyx28+u5YyazedLRetk7waWjAwSF0GRY6/A+VPFegTpvyNGmWRMeHx+XPD9ASZmwVB+D1L0xieYy1fAO1iDGkfVB4UEc7HxhftHAbQdimfI0a58t/MtWwE73gJ0wfzssyBHPco9w3yVGOnxq+Py0AeSlNiS6DwYiGRiFbG1WYUqBZf/SoCTFbgKrqzeR8v/nvayZzDOZa2zjgG/xs3xAIEBjkkWpq7X2d82fLa0foTmE7DBgTxFNk/7wfnhpM2SgvjM4VArN0KYgsbTdmhLQJpXDFMut6I05VYfp4zDKAqISABNkWZA7/uw3Pvif gerlof@gerlof-laptop
+    timezone: Europe/Amsterdam
+  tasks:
+    - ansible.builtin.file:
+        src: "/usr/share/zoneinfo/{{ timezone }}"
+        dest: /etc/localtime
+        state: link
+    - ansible.builtin.lineinfile:
+        path: /etc/locale.gen
+        regexp: ^#en_US.UTF-8 UTF-8
+        line: en_US.UTF-8 UTF-8
+      register: locale_result
+    - ansible.builtin.shell:
+        cmd: locale-gen
+      when: locale_result.changed
+    - ansible.builtin.copy:
+        content: |
+          LANG=en_US.UTF-8
+        dest: /etc/locale.conf
+
+    - ansible.builtin.service:
+        name: "{{ item }}"
+        enabled: true
+      loop:
+        - sshd
+        - systemd-networkd
+        - systemd-resolved
+
+    - ansible.builtin.user:
+        user: root
+        password: "{{ root_password }}"
+    - ansible.posix.authorized_key:
+        user: root
+        key: "{{ ssh_key }}"
+
+    - ansible.builtin.shell:
+        cmd: grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+        creates: /boot/EFI
+    - ansible.builtin.shell:
+        cmd: grub-mkconfig -o /boot/grub/grub.cfg
+        creates: /boot/grub/grub.cfg

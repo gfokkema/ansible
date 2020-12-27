@@ -1,0 +1,13 @@
+esp_start: 1
+esp_size: 256
+esp_end: "{{ esp_start + esp_size }}"
+network_real: "{{ network_defaults | combine(network) }}"
+packages:
+  - ansible
+  - base
+  - base-devel
+  - efibootmgr
+  - grub
+  - linux
+  - linux-firmware
+  - openssh
